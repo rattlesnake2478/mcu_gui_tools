@@ -1,5 +1,8 @@
 #include "bitmaskstorage.h"
 
+#include <QFile>
+#include <QTextStream>
+
 BitMaskStorage::BitMaskStorage(QObject *parent)
     :QAbstractListModel(parent), storage_({})
 {
@@ -10,6 +13,7 @@ int
 BitMaskStorage::rowCount(const QModelIndex &parent) const {
     return parent.isValid() ? 0 : storage_.size();
 }
+
 
 Qt::ItemFlags
 BitMaskStorage::
@@ -54,7 +58,46 @@ bool
 BitMaskStorage::addNewMask(QString name, uint16_t w, uint16_t h) {
     // TODO: name check
     beginInsertRows(QModelIndex(), storage_.size(), storage_.size());
-    storage_.push_back(qMakePair(std::move(name), Mask({10,10,{0x80100200,0x40080100,0x20040080,0x10000000}})));
+    storage_.push_back(qMakePair(std::move(name), Mask(w, h)));
     endInsertRows();
     return true;
+}
+
+QString
+BitMaskStorage::loadFromFile(const QString &fileName) {
+    auto file = QFile(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return "Cannot open file!";
+    QTextStream in(&file);
+    beginRemoveRows(QModelIndex(), 0, storage_.size());
+    storage_.clear();
+    endRemoveRows();
+
+    beginInsertRows(QModelIndex(), 0, 0);
+    while(!in.atEnd()) {
+        QString string = in.readLine();
+        if (string.length() == 0) break;
+        QTextStream ss(&string);
+        QString name;
+        ss >> name;
+        ss >> name;
+        ss >> name;
+        Mask mask;
+        ss >> mask;
+        storage_.push_back(qMakePair(std::move(name), std::move(mask)));
+    }
+    endInsertRows();
+    return "";
+}
+
+QString
+BitMaskStorage::saveToFile(const QString &fileName) const {
+    auto file = QFile(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return "Cannot open file to save!";
+    QTextStream out(&file);
+    for(const auto& item: storage_) {
+        out << "const McuGui::Mask " << item.first << " " << item.second.toString() << ";" << '\n';
+    }
+    return "";
 }

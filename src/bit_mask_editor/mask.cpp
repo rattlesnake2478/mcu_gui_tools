@@ -1,6 +1,4 @@
 #include "mask.h"
-#include <sstream>
-#include <iomanip>
 
 Mask::Mask(uint16_t w, uint16_t h)
     :width_(w), height_(h)
@@ -64,23 +62,43 @@ Mask::getVectorSize(uint16_t w, uint16_t h) {
     return w * h / 32 + addition;
 }
 
-std::string
+QString
 Mask::toString() const {
-    std::stringstream ss;
-    ss << *this;
-    return ss.str();
+    QString result;
+    QTextStream out(&result);
+    out << *this;
+    return result;
 }
 
-std::ostream& operator << (std::ostream &out, const Mask& mask) {
-    out << '{' << std::dec << mask.width_ << ',' << mask.height_ << ','
+QTextStream& operator << (QTextStream& out, const Mask& mask) {
+    out << '{' << mask.width_ << ',' << mask.height_ << ','
         << '{';
     bool first = true;
-    out << std::hex;
+    out.setIntegerBase(16);
+    out.setNumberFlags(QTextStream::NumberFlag::ShowBase);
     for (const auto& num: mask.data_) {
         if (!first) out << ',';
         first = false;
-        out << "0x" << num;
+        out << num;
     }
     out << "}}";
     return out;
+}
+
+QTextStream& operator >> (QTextStream& in, Mask& mask) {
+    auto dummy = in.read(2);
+    in >> mask.width_;
+    dummy = in.read(1);
+    in >> mask.height_;
+    dummy = in.read(2);
+    in.setIntegerBase(16);
+    mask.data_.clear();
+    while(dummy != "}") {
+        uint32_t value;
+        in >> value;
+        mask.data_.push_back(value);
+        dummy = in.read(1);
+    }
+    in.setIntegerBase(10);
+    return in;
 }

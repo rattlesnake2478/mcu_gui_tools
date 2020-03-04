@@ -19,17 +19,17 @@ SOURCES += \
     main.cpp \
     src/bit_mask_editor/bitmaskeditpoint.cpp \
     src/bit_mask_editor/bitmaskeditwidget.cpp \
-    src/bit_mask_editor/bitmaskstorage.cpp \
     src/bit_mask_editor/bitmaskviewer.cpp \
     src/bit_mask_editor/mask.cpp \
+    src/tools/bitmaskstorage.cpp \
     src/tools/maskeditor.cpp
 
 HEADERS += \
     src/bit_mask_editor/bitmaskeditpoint.h \
     src/bit_mask_editor/bitmaskeditwidget.h \
-    src/bit_mask_editor/bitmaskstorage.h \
     src/bit_mask_editor/bitmaskviewer.h \
     src/bit_mask_editor/mask.h \
+    src/tools/bitmaskstorage.h \
     src/tools/maskeditor.h
 
 # Default rules for deployment.

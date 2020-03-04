@@ -6,6 +6,7 @@
 #include <string>
 
 #include <QMetaType>
+#include <QTextStream>
 
 class Mask
 {
@@ -21,8 +22,9 @@ public:
     const uint32_t* getRawData() const { return data_.data(); }
     bool getAt(uint16_t, uint16_t) const;
     void setAt(uint16_t, uint16_t, bool);
-    std::string toString() const;
-    friend std::ostream& operator << (std::ostream &out, const Mask& mask);
+    QString toString() const;
+    friend QTextStream& operator << (QTextStream& out, const Mask& mask);
+    friend QTextStream& operator >> (QTextStream& out, Mask& mask);
 
 private:
     typedef struct {

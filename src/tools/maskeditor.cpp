@@ -6,14 +6,36 @@
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QListView>
+#include <QFileDialog>
 
-#include "src/bit_mask_editor/bitmaskstorage.h"
+#include "bitmaskstorage.h"
 
 MaskEditor::MaskEditor(QWidget *parent) : QMainWindow(parent)
 {
     setupMenu();
     setupLayout();
     setupLayoutInteraction();
+}
+
+void
+MaskEditor::openMaskFile() {
+    QFileDialog dialog(this, tr("Open Mask file"));
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    if (dialog.exec() == QDialog::Accepted) {
+        storage_->loadFromFile(dialog.selectedFiles().constFirst());
+        auto selection_model = mask_list_->selectionModel();
+        selection_model->setCurrentIndex(storage_->index(0), QItemSelectionModel::SelectCurrent);
+    }
+}
+
+void
+MaskEditor::saveMaskFile() {
+    QFileDialog dialog(this, tr("Save Mask file"));
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    if (dialog.exec() == QDialog::Accepted) {
+        storage_->saveToFile(dialog.selectedFiles().constFirst());
+    }
 }
 
 void
@@ -25,12 +47,14 @@ MaskEditor::setupMenu() {
     QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip(tr("Open an mask file"));
+    connect(openAct, &QAction::triggered, this, &MaskEditor::openMaskFile);
     fileMenu->addAction(openAct);
 
     const QIcon saveIcon = QIcon::fromTheme("document-save-as", QIcon(":/icons/save-icon"));
     QAction *saveAct = new QAction(saveIcon, tr("&Save..."), this);
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setStatusTip(tr("Save mask file"));
+    connect(saveAct, &QAction::triggered, this, &MaskEditor::saveMaskFile);
     fileMenu->addAction(saveAct);
 
     const QIcon exitIcon = QIcon::fromTheme("application-exit", QIcon(":/icons/exit-icon"));
@@ -53,6 +77,7 @@ MaskEditor::setupLayout() {
 
     editor_ = new BitMaskEditWidget(this);
     QScrollArea* area = new QScrollArea(this);
+    area->setMinimumSize({375, 375});
     area->setWidget(editor_);
     main_layout->addWidget(area, 2, 1, 4, 4);
 
@@ -75,13 +100,13 @@ MaskEditor::setupLayoutInteraction() {
         auto mask = current.data(BitMaskStorage::MaskViewRole).value<Mask>();
         this->viewer_->showMask(mask);
         this->editor_->setMask(mask);
-        this->mask_data_->setText(mask.toString().c_str());
+        this->mask_data_->setText(mask.toString());
     });
     selection_model->setCurrentIndex(storage_->index(0), QItemSelectionModel::SelectCurrent);
 
     connect(editor_, &BitMaskEditWidget::maskChanged, viewer_, &BitMaskViewer::showMask);
     connect(editor_, &BitMaskEditWidget::maskChanged, [this](const Mask& mask){
-       this->mask_data_->setText(mask.toString().c_str());
+       this->mask_data_->setText(mask.toString());
        auto index = this->mask_list_->selectionModel()->currentIndex();
        auto data = QVariant();
        data.setValue(mask);

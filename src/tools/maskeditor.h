@@ -7,7 +7,7 @@
 
 #include "src/bit_mask_editor/bitmaskeditwidget.h"
 #include "src/bit_mask_editor/bitmaskviewer.h"
-#include "src/bit_mask_editor/bitmaskstorage.h"
+#include "src/tools/bitmaskstorage.h"
 
 class MaskEditor : public QMainWindow
 {
@@ -16,6 +16,9 @@ public:
     explicit MaskEditor(QWidget *parent = nullptr);
 
 private:
+    void openMaskFile();
+    void saveMaskFile();
+
     void setupMenu();
     void setupLayout();
     void setupLayoutInteraction();
