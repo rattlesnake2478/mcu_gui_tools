@@ -43,26 +43,14 @@ MaskEditor::setupMenu() {
     auto fileMenu = menuBar()->addMenu(tr("&File"));
 
     // Menu
-    const QIcon openIcon = QIcon::fromTheme("document-open", QIcon(":/icons/open-icon"));
-    QAction *openAct = new QAction(openIcon, tr("&Open..."), this);
-    openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip(tr("Open an mask file"));
-    connect(openAct, &QAction::triggered, this, &MaskEditor::openMaskFile);
-    fileMenu->addAction(openAct);
+    QAction *openAction = fileMenu->addAction(tr("&Open..."), this, &MaskEditor::openMaskFile);
+    openAction->setShortcuts(QKeySequence::Open);
 
-    const QIcon saveIcon = QIcon::fromTheme("document-save-as", QIcon(":/icons/save-icon"));
-    QAction *saveAct = new QAction(saveIcon, tr("&Save..."), this);
-    saveAct->setShortcuts(QKeySequence::Save);
-    saveAct->setStatusTip(tr("Save mask file"));
-    connect(saveAct, &QAction::triggered, this, &MaskEditor::saveMaskFile);
-    fileMenu->addAction(saveAct);
+    QAction *saveAction = fileMenu->addAction(tr("&Save..."), this, &MaskEditor::saveMaskFile);
+    saveAction->setShortcuts(QKeySequence::Save);
 
-    const QIcon exitIcon = QIcon::fromTheme("application-exit", QIcon(":/icons/exit-icon"));
-    QAction *exitAct = new QAction(exitIcon, tr("&Quit..."), this);
-    exitAct->setShortcuts(QKeySequence::Quit);
-    exitAct->setStatusTip(tr("Exit the mask editor"));
-    connect(exitAct, &QAction::triggered, this, &MaskEditor::close);
-    fileMenu->addAction(exitAct);
+    QAction *exitAction = fileMenu->addAction(tr("&Quit..."), this, &MaskEditor::close);
+    exitAction->setShortcut(QKeySequence::Quit);
 }
 void
 MaskEditor::setupLayout() {
