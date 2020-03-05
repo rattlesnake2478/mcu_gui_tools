@@ -22,8 +22,10 @@ void
 BitMaskEditWidget::fillFromMask() {
     if (layout_ != nullptr) {
         delete layout_;
+        for(auto point: points_) {
+            delete point;
+        }
         points_.clear();
-        points_.reserve(mask_.getWidth() * mask_.getHeight());
     }
     layout_ = new QGridLayout(this);
 

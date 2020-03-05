@@ -3,8 +3,9 @@
 
 #include <QWidget>
 #include <QGridLayout>
-#include <QVector>
+#include <QList>
 #include "mask.h"
+#include "bitmaskeditpoint.h"
 
 // TODO: reworkin with direct drawing to give ability to make track of points
 class BitMaskEditWidget : public QWidget
@@ -19,7 +20,7 @@ public slots:
 
 private:
     QGridLayout* layout_ = nullptr;
-    QVector<QWidget*> points_;
+    QList<BitMaskEditPoint*> points_;
     void fillFromMask();
     Mask mask_;
 
