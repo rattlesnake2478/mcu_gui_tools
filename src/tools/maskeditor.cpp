@@ -7,6 +7,7 @@
 #include <QScrollArea>
 #include <QListView>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "bitmaskstorage.h"
 
@@ -23,18 +24,25 @@ MaskEditor::openMaskFile() {
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
     dialog.setFileMode(QFileDialog::ExistingFile);
     if (dialog.exec() == QDialog::Accepted) {
-        storage_->loadFromFile(dialog.selectedFiles().constFirst());
-        auto selection_model = mask_list_->selectionModel();
-        selection_model->setCurrentIndex(storage_->index(0), QItemSelectionModel::SelectCurrent);
+        auto result = storage_->loadFromFile(dialog.selectedFiles().constFirst());
+        if (result.length() != 0) {
+            QMessageBox::warning(this, "Cannot open masks", result);
+        } else {
+            auto selection_model = mask_list_->selectionModel();
+            selection_model->setCurrentIndex(storage_->index(0), QItemSelectionModel::SelectCurrent);
+        }
     }
 }
 
 void
 MaskEditor::saveMaskFile() {
     QFileDialog dialog(this, tr("Save Mask file"));
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
     if (dialog.exec() == QDialog::Accepted) {
-        storage_->saveToFile(dialog.selectedFiles().constFirst());
+        auto result = storage_->saveToFile(dialog.selectedFiles().constFirst());
+        if (result.length() != 0) {
+            QMessageBox::warning(this, "Cannot save masks", result);
+        }
     }
 }
 
