@@ -18,6 +18,8 @@ public:
 private:
     void openMaskFile();
     void saveMaskFile();
+    void addMask();
+    void removeMask();
 
     void setupMenu();
     void setupLayout();

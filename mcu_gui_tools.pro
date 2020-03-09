@@ -22,6 +22,7 @@ SOURCES += \
     src/bit_mask_editor/bitmaskviewer.cpp \
     src/bit_mask_editor/mask.cpp \
     src/tools/bitmaskstorage.cpp \
+    src/tools/maskdialog.cpp \
     src/tools/maskeditor.cpp
 
 HEADERS += \
@@ -30,6 +31,7 @@ HEADERS += \
     src/bit_mask_editor/bitmaskviewer.h \
     src/bit_mask_editor/mask.h \
     src/tools/bitmaskstorage.h \
+    src/tools/maskdialog.h \
     src/tools/maskeditor.h
 
 # Default rules for deployment.
@@ -37,4 +39,5 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-RESOURCES +=
+RESOURCES += \
+    icons.qrc

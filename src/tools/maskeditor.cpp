@@ -5,11 +5,13 @@
 #include <QIcon>
 #include <QGridLayout>
 #include <QScrollArea>
+#include <QToolBar>
 #include <QListView>
 #include <QFileDialog>
 #include <QMessageBox>
 
 #include "bitmaskstorage.h"
+#include "maskdialog.h"
 
 MaskEditor::MaskEditor(QWidget *parent) : QMainWindow(parent)
 {
@@ -47,6 +49,23 @@ MaskEditor::saveMaskFile() {
 }
 
 void
+MaskEditor::addMask() {
+    auto dialog = new MaskDialog(this);
+    auto result = dialog->exec();
+    if (result == MaskDialog::Accepted) {
+        auto form = dialog->getForm();
+        storage_->addNewMask(form.name, form.width, form.height);
+    }
+}
+
+void
+MaskEditor::removeMask() {
+    auto selection_model = mask_list_->selectionModel();
+    auto index = selection_model->currentIndex().row();
+    storage_->removeMask(index);
+}
+
+void
 MaskEditor::setupMenu() {
     auto fileMenu = menuBar()->addMenu(tr("&File"));
 
@@ -59,6 +78,25 @@ MaskEditor::setupMenu() {
 
     QAction *exitAction = fileMenu->addAction(tr("&Quit..."), this, &MaskEditor::close);
     exitAction->setShortcut(QKeySequence::Quit);
+
+    QMenu *maskMenu = menuBar()->addMenu(tr("&Mask"));
+    QToolBar *maskToolBar = addToolBar(tr("Mask"));
+
+    const QIcon addIcon = QIcon(":/icons/plus.png");
+    QAction *addAction = new QAction(addIcon, tr("&Add"), this);
+    addAction->setShortcuts(QKeySequence::New);
+    addAction->setStatusTip(tr("Add new mask"));
+    connect(addAction, &QAction::triggered, this, &MaskEditor::addMask);
+    maskMenu->addAction(addAction);
+    maskToolBar->addAction(addAction);
+
+    const QIcon removeIcon = QIcon(":/icons/minus.png");
+    QAction *removeAction = new QAction(removeIcon, tr("&Remove"), this);
+    removeAction->setShortcuts(QKeySequence::Delete);
+    removeAction->setStatusTip(tr("Remove selected mask"));
+    connect(removeAction, &QAction::triggered, this, &MaskEditor::removeMask);
+    maskMenu->addAction(removeAction);
+    maskToolBar->addAction(removeAction);
 }
 void
 MaskEditor::setupLayout() {

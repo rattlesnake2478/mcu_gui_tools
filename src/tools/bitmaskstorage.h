@@ -24,6 +24,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant& value, int role) override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     bool addNewMask(QString name, uint16_t w, uint16_t h);
+    bool removeMask(int index);
     QString loadFromFile(const QString &fileName);
     QString saveToFile(const QString &fileName) const;
 

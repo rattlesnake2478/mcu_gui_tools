@@ -63,6 +63,17 @@ BitMaskStorage::addNewMask(QString name, uint16_t w, uint16_t h) {
     return true;
 }
 
+bool
+BitMaskStorage::removeMask(int index) {
+    if (index < 0 || index >= storage_.size()) {
+        return false;
+    }
+    beginRemoveRows(QModelIndex(), index, index);
+    storage_.remove(index);
+    endRemoveRows();
+    return true;
+}
+
 QString
 BitMaskStorage::loadFromFile(const QString &fileName) {
     auto file = QFile(fileName);
