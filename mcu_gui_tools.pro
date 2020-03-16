@@ -22,6 +22,7 @@ SOURCES += \
     src/bit_mask_editor/bitmaskviewer.cpp \
     src/bit_mask_editor/mask.cpp \
     src/tools/bitmaskstorage.cpp \
+    src/tools/bmpconverter.cpp \
     src/tools/maskdialog.cpp \
     src/tools/maskeditor.cpp
 
@@ -31,6 +32,7 @@ HEADERS += \
     src/bit_mask_editor/bitmaskviewer.h \
     src/bit_mask_editor/mask.h \
     src/tools/bitmaskstorage.h \
+    src/tools/bmpconverter.h \
     src/tools/maskdialog.h \
     src/tools/maskeditor.h
 
